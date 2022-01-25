@@ -1,102 +1,100 @@
-import React from "react";
-import { StyleSheet, View, Text } from "react-native";
-import { PanGestureHandler, State } from "react-native-gesture-handler";
-import Animated, {
-  add,
-  diffClamp,
-  eq,
-  modulo,
-  sub,
-} from "react-native-reanimated";
-import { onGestureEvent, useValues } from "react-native-redash";
+import React,{useEffect, useState} from "react";
+import { Dimensions, StyleSheet, View, ScrollView } from "react-native";
 
-import data from "./data.json";
-import Chart, { size } from "./Chart";
+import swag from "./data.json";
 import Values from "./Values";
 import Line from "./Line";
-import Label from "./Label";
-import { Candle } from "./Candle";
 import Content from "./Content";
 import Header from "./Header";
-import { ScrollView } from "react-navigation";
-import PinchZoomView from "react-native-pinch-zoom-view";
+import { Candle } from "./Candle";
+import Chart from "./Chart";
+import axios, {AxiosResponse} from "axios"
+const ws = new WebSocket('ws://stream.binance.com:9443/ws/btcusdt@trade');
 
 
-const candles = data.slice(0, 100);
-const bars = data.slice(0, 100);
+
+
+const { width: size } = Dimensions.get("window");
+const apiUrl = 'https://dc4e-103-211-40-66.ngrok.io/api/candlestick/symbole/YFIUSDT/interval/1m';
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "black",
-  },
+    backgroundColor: "black"
+  }
 });
-const getDomain = (rows: Candle[]): [number, number] => {
-  const values = rows.map(({ high, low }) => [high, low]).flat();
-  return [Math.min(...values), Math.max(...values)];
-};
-const domain = getDomain(candles);
-export default function CoinbasePro() {
-  console.log("reached");
-  const [x, y, state] = useValues(0, 0, State.UNDETERMINED);
 
-  console.log(x,y,state);
-  const gestureHandler = onGestureEvent({
-    x,
-    y,
-    state,
-  });
-  const caliber = size / candles.length;
-  const translateY = diffClamp(y, 0, size);
-  const translateX = add(sub(x, modulo(x, caliber)), caliber / 2);
-  const opacity = eq(state, State.ACTIVE);
+export default () => {
 
+
+ 
+  
+
+  const [data, setData] = useState([])
+
+
+  const getdata = async ()=>{
+     await axios
+        .get(apiUrl)
+        .then((response:AxiosResponse)=>{
+          setData(response.data);
+        })
+  }
+
+  useEffect(()=>{
+      getdata();
+      ws.onopen = () => {
+        // connection opened
+        ws.send('something'); 
+        console.log("opened")// send a message
+      };
+    
+    
+      ws.onmessage = (event) => {
+        // a message was received
+        console.log(event.data + " message");
+      };
+    
+    
+      ws.onerror = (e) => {
+        // an error occurred
+        console.log(e);
+      };
+    
+      ws.onclose = (e) => {
+        // connection closed
+        console.log(e.code, e.reason);
+      };
+      
+  },[])
+
+  const [slicer,setSlicer] = useState(20);
 
   
-  return (
+  const candles = data.slice(0, slicer);
+  const bars = data.slice(0, slicer);
+  if(data.length>0){
+  const values = candles.map(candle=> [candle.low,candle.high]).flat();
+  }
+  const getDomain = (rows: Candle[]): [number, number] => {
+    const values = rows.map(({ high, low }) => [high, low]).flat();
+    return [Math.min(...values), Math.max(...values)];
+  };
+  const domain = getDomain(candles);
+  const caliber = size / candles.length;
 
-    
+
+
+
+  return (
     <View style={styles.container}>
-       <ScrollView>
+      <ScrollView>
       <View>
         <Header />
-        
-        <Animated.View style={{ opacity }} pointerEvents="none">
-          <Values {...{ candles, translateX, caliber }} />
-        </Animated.View>
+        {/* <Values {...{ caliber, candles }} /> */}
       </View>
-      <PinchZoomView>  
-      <View>
-       
-         
-        <Chart {...{ candles, domain, bars }} />
-        
-       
-        
-        <PanGestureHandler minDist={0} {...gestureHandler}>
-          <Animated.View style={StyleSheet.absoluteFill}>
-            <Animated.View
-              style={{
-                transform: [{ translateY }],
-                opacity,
-                ...StyleSheet.absoluteFillObject,
-              }}
-            >
-              <Line x={size+size} y={0} />
-            </Animated.View>
-            <Animated.View
-              style={{
-                transform: [{ translateX }],
-                opacity,
-                ...StyleSheet.absoluteFillObject,
-              }}
-            >
-              <Line x={0} y={size+size} />
-            </Animated.View>
-            <Label y={translateY} {...{ size, domain, opacity }} />
-          </Animated.View>
-        </PanGestureHandler>
-      </View>
-      </PinchZoomView>
+      <View  style={{paddingTop: size/3}} />
+      <Chart  slicer={slicer} {...{ candles, domain, bars, setSlicer}} />
       <Content />
       </ScrollView>
     </View>

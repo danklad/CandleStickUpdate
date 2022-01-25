@@ -1,6 +1,9 @@
 import React from "react";
-import { ScaleLinear } from "d3-scale";
-import { Line, Rect } from "react-native-svg";
+import { View } from "react-native";
+// import { Candle } from "./Model"
+import {ScaleLinear} from 'd3-scale'
+import { Line,Rect } from 'react-native-svg'
+
 
 const MARGIN = 2;
 
@@ -11,6 +14,7 @@ export interface Candle {
   high: number;
   low: number;
   close: number;
+  volume: number;
 }
 
 interface CandleProps {

@@ -6,59 +6,59 @@ import { useNavigation } from "react-navigation-hooks";
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: 1
   },
   content: {
     flex: 1,
-    padding: 16,
+    padding: 16
   },
   header: {
     flexDirection: "row",
-    alignItems: "center",
+    alignItems: "center"
   },
   icon: {
-    marginRight: 16,
+    marginRight: 16
   },
   title: {
     color: "white",
     fontSize: 20,
-    fontWeight: "500",
+    fontWeight: "500"
   },
   subtitle: {
     fontSize: 16,
-    color: "#d3d3d3",
+    color: "#d3d3d3"
   },
   rightColumn: {
-    flex: 1,
+    flex: 1
   },
   leftColumn: {
     flex: 1,
-    alignItems: "flex-end",
+    alignItems: "flex-end"
   },
   tabs: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 16,
+    marginTop: 16
   },
   tabContainer: {
     backgroundColor: "#222324",
     borderRadius: 8,
-    flexDirection: "row",
+    flexDirection: "row"
   },
   tab: {
-    padding: 8,
+    padding: 8
   },
   tabLabel: {
     fontSize: 14,
     fontVariant: ["tabular-nums"],
-    color: "#d3d3d3",
+    color: "#d3d3d3"
   },
   tabLabelActive: {
     fontSize: 14,
     fontVariant: ["tabular-nums"],
     color: "white",
-    fontWeight: "500",
-  },
+    fontWeight: "500"
+  }
 });
 
 const Tabs = ({ tabs }: { tabs: string[] }) => (
@@ -80,14 +80,14 @@ export default () => {
       <SafeAreaView style={styles.container}>
         <View style={styles.content}>
           <View style={styles.header}>
-            <Icon.Button
+            {/* <Icon.Button
               name="arrow-left"
               color="#d3d3d3"
               size={32}
               style={styles.icon}
               onPress={() => goBack()}
               backgroundColor="transparent"
-            />
+            /> */}
             <View style={styles.rightColumn}>
               <Text style={styles.title}>BTC - USD</Text>
               <Text style={styles.subtitle}>2.2k BTC 24hr vol</Text>

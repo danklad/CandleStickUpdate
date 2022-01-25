@@ -11,40 +11,38 @@ import { store } from './src/redux'
 import { createAppContainer, createSwitchNavigator } from 'react-navigation'
 import { createStackNavigator } from 'react-navigation-stack'
 import { createBottomTabNavigator } from 'react-navigation-tabs'
-import { SearchScreen } from './src/screens/SearchScreen';
-import { RestaurantScreen } from './src/screens/RestaurantScreen';
 import { AccountScreen } from './src/screens/AccountScreen';
 import { LoginScreen } from './src/screens/LoginScreen';
+import CoinbasePro from './src/screens/CoinbasePro';
 
 
 const switchNavigator = createSwitchNavigator({
 
-    landingStack: {
-      screen: createStackNavigator({
-        Landing: LandingScreen,
-        // search address screen
-      },{
-        defaultNavigationOptions: {
-          headerShown: false
-        }
-      }),
+    // landingStack: {
+    //   screen: createStackNavigator({
+    //     Landing: LandingScreen,
+    //     // search address screen
+    //   },{
+    //     defaultNavigationOptions: {
+    //       headerShown: false
+    //     }
+    //   }),
 
-    },
+    // },
 
     homeStack:  createBottomTabNavigator({
 
       // Home tab Icon
-      home: {
+      Home: {
         screen: createStackNavigator({
           HomePage: HomeScreen,
-          SearchPage: SearchScreen,
-          RestaurantPage: RestaurantScreen,
           AccountPage: AccountScreen,
         },{
           defaultNavigationOptions: {
-            headerShown: false
+            headerShown: true
           }
         }),
+        
         navigationOptions: {
           tabBarIcon: ({ focused, tintColor}) => {
             let icon = focused == true ? require('./src/images/home_icon.png') : require('./src/images/home_n_icon.png') 
@@ -54,9 +52,9 @@ const switchNavigator = createSwitchNavigator({
       },
 
       // Home tab Icon
-      Offer: {
+      Market: {
         screen: createStackNavigator({
-          OfferPage: HomeScreen 
+          MarketPage: HomeScreen 
         }),
         navigationOptions: {
           tabBarIcon: ({ focused, tintColor}) => {
@@ -65,14 +63,23 @@ const switchNavigator = createSwitchNavigator({
           }
         }
       },
+      Trade: {
+        screen: createStackNavigator({
+          CoinPage: CoinbasePro 
+        }),
+        navigationOptions: {
+          tabBarIcon: ({ focused, tintColor}) => {
+            let icon = focused == true ? require('./src/images/chart_n_icon.png') : require('./src/images/chart_icon.png') 
+            return <Image source={icon} style={styles.tabIcon} />
+          }
+        }
+      },
 
-     
-      
+       
        // Home tab Icon
        Account: {
         screen: createStackNavigator({
           AccountPage: AccountScreen,
-          LoginPage: LoginScreen
         }),
         navigationOptions: {
           tabBarIcon: ({ focused, tintColor}) => {
@@ -82,7 +89,32 @@ const switchNavigator = createSwitchNavigator({
         }
       }
 
-     })
+     },
+     {
+
+      
+      
+      
+       tabBarOptions:{
+        showLabel: true,
+        style: {
+          borderTopWidth: 0,
+          paddingTop: 3,
+          paddingBottom: 5,
+          height: 60,
+          shadowColor: '#000',
+          shadowOpacity: 0.1,
+          shadowRadius: 20,
+          backgroundColor: "#112222",
+          shadowOffset: { width: 0, height: 0 }
+        }
+       }
+     }
+     
+     
+     
+     
+     )
 
 });
 
@@ -92,7 +124,7 @@ const AppNavigation = createAppContainer(switchNavigator);
 export default function App() {
   return (
     <Provider store={store}>
-      <AppNavigation />
+      <AppNavigation  />
     </Provider>
   );
 }

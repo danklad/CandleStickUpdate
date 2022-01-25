@@ -1,7 +1,9 @@
 import React from "react";
-import {View} from "react-native"
-import { ScaleLinear } from "d3-scale";
-import {  Rect } from "react-native-svg";
+import { View } from "react-native";
+// import { Candle } from "./Model"
+import {ScaleLinear} from 'd3-scale'
+import { Line,Rect } from 'react-native-svg'
+
 
 const MARGIN = 2;
 
@@ -12,6 +14,7 @@ export interface Bars {
   high: number;
   low: number;
   close: number;
+  volume:number;
 }
 
 interface BarsProps {
@@ -23,7 +26,7 @@ interface BarsProps {
 }
 
 export default ({ bar, index, width, scaleY, scaleBody }: BarsProps) => {
-  const { close, open, high, low } = bar;
+  const { close, open, high, low, volume } = bar;
   const fill = close > open ? "#4AFA9A" : "#E33F64";
   const x = index * width;
   const max = Math.max(open, close);
@@ -35,7 +38,7 @@ export default ({ bar, index, width, scaleY, scaleBody }: BarsProps) => {
         x={x + MARGIN}  
         y={scaleY(min)}
         width={width - MARGIN * 2}
-        height={scaleBody(max)}
+        height={scaleBody(volume*min)}
         {...{ fill }}
       />
       </View>

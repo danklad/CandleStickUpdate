@@ -1,6 +1,8 @@
-import Animated, { Value, multiply, pow, sub } from "react-native-reanimated";
+import Animated from "react-native-reanimated";
 import { State } from "react-native-gesture-handler";
 import { onGestureEvent } from "react-native-redash";
+
+const { Value, multiply, pow, sub } = Animated;
 
 // Thanks Flutter 🙋🏼‍♂️
 // https://bit.ly/2mgDDLF
@@ -14,12 +16,12 @@ export const verticalPanGestureHandler = () => {
   const gestureHandler = onGestureEvent({
     translationY,
     velocityY,
-    state,
+    state
   });
   return {
     translationY,
     state,
     velocityY,
-    gestureHandler,
+    gestureHandler
   };
 };
