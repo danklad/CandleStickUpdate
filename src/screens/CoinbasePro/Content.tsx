@@ -28,11 +28,7 @@ useEffect(()=>{
   console.log('reached here too')
   ws.onopen = () => {
     // connection opened
-    ws.send(JSON.stringify({
-      method: 'SUBSCRIBE',
-      params: ['dogeaud@ticker'],
-      id: 1,
-    })); 
+    ws.send("connetion"); 
     console.log("opened")// send a message
   };
 
