@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
-import { HomeScreen } from './src/screens/HomeScreen';
+import { HomeScreen } from './src/screens/HomeScreen'
 import { LandingScreen } from './src/screens/LandingScreen';
 
 import { Provider } from 'react-redux'
@@ -14,28 +14,69 @@ import { createBottomTabNavigator } from 'react-navigation-tabs'
 import { AccountScreen } from './src/screens/AccountScreen';
 import { LoginScreen } from './src/screens/LoginScreen';
 import CoinbasePro from './src/screens/CoinbasePro';
+import { OtpScreen } from './src/screens/OtpScreen';
+import {SignUpScreen} from './src/screens/SignUpScreen'
+
+
+
 
 
 const switchNavigator = createSwitchNavigator({
 
-    // landingStack: {
-    //   screen: createStackNavigator({
-    //     Landing: LandingScreen,
-    //     // search address screen
-    //   },{
-    //     defaultNavigationOptions: {
-    //       headerShown: false
-    //     }
-    //   }),
+    landingStack: {
+      screen: createStackNavigator({
+        Landing: LandingScreen,
+        // search address screen
+      },{
+        defaultNavigationOptions: {
+          headerShown: false
+        }
+      }),
 
-    // },
+    },
+    Login: {
+      screen: createStackNavigator({
+        Login: LoginScreen,
+        // search address screen
+      },{
+        defaultNavigationOptions: {
+          headerShown: false
+        }
+      }),
+
+    },
+    Otp: {
+      screen: createStackNavigator({
+        Otp: OtpScreen,
+        // search address screen
+      },{
+        defaultNavigationOptions: {
+          headerShown: false
+        }
+      }),
+
+    },
+
+    SignUp: {
+      screen: createStackNavigator({
+        SignUp: SignUpScreen,
+        // search address screen
+      },{
+        defaultNavigationOptions: {
+          headerShown: false
+        }
+      }),
+
+    },
+    
+    
 
     homeStack:  createBottomTabNavigator({
 
       // Home tab Icon
       Home: {
         screen: createStackNavigator({
-          HomePage: HomeScreen,
+          Home: HomeScreen,
           AccountPage: AccountScreen,
         },{
           defaultNavigationOptions: {
@@ -60,7 +101,7 @@ const switchNavigator = createSwitchNavigator({
           tabBarIcon: ({ focused, tintColor}) => {
             let icon = focused == true ? require('./src/images/offer_icon.png') : require('./src/images/offer_n_icon.png') 
             return <Image source={icon} style={styles.tabIcon} />
-          }
+          },
         }
       },
       Trade: {

@@ -29,55 +29,16 @@ interface LandingProps{
     const { navigate } = useNavigation()
 
     const [errorMsg, setErrorMsg] = useState("")
-    const [address, setAddress] = useState<Location.Address>()
+    const [address, setAddress] = useState("Email")
     
-    const [displayAddress, setDisplayAddress] = useState("Waiting for Current Location")
+    const [displayAddress, setDisplayAddress] = useState("")
 
     useEffect(() => {
-
-
-        (async () => {
-
-            let { status } = await Location.requestPermissionsAsync();
-
-            if (status !== 'granted'){
-                setErrorMsg('Permission to access location is not granted')
-            }
-
-            let location: any = await Location.getCurrentPositionAsync({});
-
-            const { coords } = location
-
-            if(coords){
-
-                const { latitude, longitude} = coords;
-
-                let addressResponse: any = await Location.reverseGeocodeAsync({ latitude, longitude})
-
-                for(let item of addressResponse){
-                    setAddress(item)
-                    onUpdateLocation(item)
-                    let currentAddress = `${item.name},${item.street}, ${item.postalCode}, ${item.country}`
-                    setDisplayAddress(currentAddress)
-
-                    if(currentAddress.length > 0){
-                        setTimeout(() =>{
-                            navigate('homeStack')
-                        }, 2000)
-                    }
-
-
-                    return;
-                }
-
-
-            }else{
-                //notify user something went wrong with location
-            }
-
-        })();
-
-
+        setAddress("danladprivate@gmail.com")
+        window.setTimeout(async () => {
+            navigate('Login');
+          }, 3000);
+ 
 
     }, [])
 
@@ -87,9 +48,9 @@ interface LandingProps{
             <View style={styles.navigation} /> 
                 
             <View style={styles.body}>
-                <Image source={require('../images/delivery_icon.png')} style={styles.deliveryIcon} />
+                <Image source={require('../images/logo.png')} style={styles.deliveryIcon} />
                 <View style={styles.addressContainer}>
-                    <Text style={styles.addressTitle}>Your Delivery Address</Text>
+                    <Text style={styles.addressTitle}>Welcome To Crypto Exchange</Text>
                 </View>
                 <Text style={styles.addressText}> {displayAddress}</Text>
             </View>
@@ -130,7 +91,10 @@ const styles = StyleSheet.create({
     addressTitle:{
         fontSize: 22,
         fontWeight: '700',
-        color: '#7D7D7D'
+        color: '#7D7D7D',
+        justifyContent: 'center',
+        alignItems: 'center',
+        
     },
     addressText: {
         fontSize: 20,

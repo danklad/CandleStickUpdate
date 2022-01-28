@@ -1,17 +1,18 @@
 import React, { useState, useEffect} from 'react'
-import { StyleSheet, View, Text, TouchableOpacity, TextInput, Image } from 'react-native'
+import { StyleSheet, View, Text, TouchableOpacity, TextInput, Image, Button, ToastAndroid } from 'react-native'
 import { TextField } from '../components'
-import { ButtonWithTitle } from '../components/ButtonWithTitle';
 import { connect } from 'react-redux';
 import { ApplicationState, OnUserLogin, OnUserSignup, UserState } from '../redux';
+import {useNavigation} from '../utils'
 
-interface LoginProps{ 
-    OnUserLogin: Function,
-    OnUserSignup: Function,
-    userReducer: UserState
- }
 
-const _LoginScreen: React.FC<LoginProps> = ({ OnUserLogin, OnUserSignup, userReducer }) => {
+
+
+const LoginScreen = () => {
+ 
+    const {navigate} = useNavigation();
+
+
 
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
@@ -19,22 +20,48 @@ const _LoginScreen: React.FC<LoginProps> = ({ OnUserLogin, OnUserSignup, userRed
     const [title, setTitle] = useState('Login')
     const [isSignup, setIsSignup] = useState(false)
     
+    const showToast = (msg: any) => {
+        ToastAndroid.show(msg, ToastAndroid.LONG);
+      };
 
 
-    const onTapAuthenticate = () => {
+    // const onTapAuthenticate = () => {
+    //     getAuth();
+    //     if(isSignup){
+    //        OnUserSignup(email, phone, password);
+    //     }else{
+    //         OnUserLogin(email, password)
+    //     }
 
-        if(isSignup){
-           OnUserSignup(email, phone, password);
-        }else{
-            OnUserLogin(email, password)
+    // }
+
+    // const onTapOptions = () => {
+    //     setIsSignup(!isSignup)
+    //     setTitle(!isSignup ? 'Signup' : 'Login')
+        
+    // }
+
+
+    const auth = async () => {
+        return fetch('http://backend.bittez.io/login?email='+email+'&password='+password, {
+        method: 'POST'
+        })
+        .then(response => response.json())
+    .then((result) => {
+        console.log(result)
+        if(result.status === 'ok'){
+            var msg = email;
+            navigate('Otp', {msg: "msg"})
         }
+        else{
+            showToast("Invalid Credentials")
+        }
+    })
+    .catch(error => console.log(error));
+        
+      };
 
-    }
 
-    const onTapOptions = () => {
-        setIsSignup(!isSignup)
-        setTitle(!isSignup ? 'Signup' : 'Login')
-    }
 
 return (<View style={styles.container}>
     <View style={styles.navigation}><Text style={{ fontSize: 30, fontWeight: '400'}}>{title}</Text></View>
@@ -45,15 +72,20 @@ return (<View style={styles.container}>
             {isSignup && <TextField placeholder="Phone Number" onTextChange={setPhone} isSecure={false} />}
             <TextField placeholder="Password" onTextChange={setPassword} isSecure={true} />
 
-            <ButtonWithTitle title={title} height={50} width={350} onTap={onTapAuthenticate} />
             
-            <ButtonWithTitle 
-                title={!isSignup ? "No Account? Signup Here" : "Have an Account? Login Here"} 
-                height={50}
-                width={350} 
-                onTap={onTapOptions} 
-                isNoBg={true} 
-            />
+            <TouchableOpacity onPress={auth} style={styles.appButtonContainer}>
+                <Text style={styles.appButtonText}>{title}</Text>
+            </TouchableOpacity>
+
+                
+
+
+            <TouchableOpacity onPress={()=>navigate('SignUp')} style={styles.appButtonContainer2}>
+                <Text style={styles.appButtonText2}>New to Crypto? <Text style={{textDecorationLine: 'underline'}}>Sign Up Here</Text></Text>
+            </TouchableOpacity>
+               
+            
+           
 
     </View>
     <View style={styles.footer}></View>
@@ -63,7 +95,38 @@ const styles = StyleSheet.create({
 container: { flex: 1,},
 navigation: { flex: 3, justifyContent: 'center', paddingLeft: 30},
 body: { flex: 6, justifyContent: 'center', alignItems: 'center'},
-footer: { flex: 3,  }
+footer: { flex: 3,  },
+
+appButtonContainer: {
+    elevation: 8,
+    marginTop: 20,
+    backgroundColor: "#009688",
+    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 12
+        },
+
+appButtonContainer2: {
+    marginTop: 15,
+    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 12
+},
+    appButtonText: {
+    fontSize: 18,
+    color: "#fff",
+    fontWeight: "bold",
+    alignSelf: "center",
+    textTransform: "uppercase"
+  },
+  appButtonText2: {
+    fontSize: 18,
+    color: "black",
+    alignSelf: "center",
+    textTransform: "uppercase"
+  }
+
+
 })
 
  
@@ -73,6 +136,6 @@ const mapStateToProps = (state: ApplicationState) => ({
 })
 
 
-const LoginScreen = connect(mapStateToProps, { OnUserLogin, OnUserSignup})(_LoginScreen)
+
 
  export { LoginScreen }

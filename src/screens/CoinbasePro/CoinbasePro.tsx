@@ -15,7 +15,7 @@ import axios, {AxiosResponse} from "axios"
 
 
 const { width: size } = Dimensions.get("window");
-const apiUrl = 'https://1069-103-211-40-66.ngrok.io/api/candlestick/symbole/YFIUSDT/interval/1m';
+const apiUrl = 'https://d532-103-211-40-8.ngrok.io//api/candlestick/symbole/YFIUSDT/interval/1m';
 
 const styles = StyleSheet.create({
   container: {
