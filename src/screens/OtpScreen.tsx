@@ -4,14 +4,12 @@ import { TextField } from '../components'
 import { connect } from 'react-redux';
 import { ApplicationState, OnUserLogin, OnUserSignup, UserState } from '../redux';
 import {useNavigation} from '../utils'
-import Separator from '../components/Separator';
-import Ionicons from '@expo/vector-icons';
+import { ToastAndroid } from 'react-native';
 
 
 
 
 const OtpScreen = (props:any) => {
-    var mail = "email"
     const {navigate} = useNavigation();
     var textInput = useRef(null)
     const lengthInput = 4;
@@ -21,8 +19,10 @@ const OtpScreen = (props:any) => {
 
 
     // const {getParam, goBack} = props.navigation;
-    console.log(props);
+    const {navigation} = props;
+    const mail = navigation.state.params.mail;
 
+    console.log(mail);
 
 
 
@@ -31,7 +31,7 @@ const OtpScreen = (props:any) => {
     const [countdown, setCountdown] = useState(defaultCountDown)
     const [enableResend, setEnableResend] = useState(false)
    
-
+    
     // useEffect(()=>{
     //     clockCall = setInterval(()=>{
     //         decrementClock();
@@ -58,14 +58,43 @@ const OtpScreen = (props:any) => {
     //     }
     // }
 
+    const showToast = (msg: any) => {
+        ToastAndroid.show(msg, ToastAndroid.SHORT);
+      };
 
-    const auth = async () => {
-        return fetch('http://backend.bittez.io/login?email='+email, {
+
+      const sendOtp = async () =>{
+        return fetch('http://backend.bittez.io/send-login-otp?email='+email, {
+            method: 'GET'
+            })
+            .then(response => response.json())
+        .then((result) => {
+            console.log("otp "+result.status)
+            if(result.status === 'ok'){
+                
+                // navigate('Otp', {mail: email})
+                showToast("Otp Sent Successfully")
+            }
+            else{
+                showToast("Otp Not Sent")
+            }
+        })
+        .catch(error => console.log(error));
+    }
+
+    const auth = async (val:any) => {
+        return fetch('http://backend.bittez.io/otp-login-verify?email='+email+'&otp='+val, {
         method: 'GET'
         })
         .then(response => response.json())
     .then((result) => {
         console.log(result)
+        if(result.status === 'ok'){
+            navigate('Home')
+        }
+        else{
+            showToast("Incorrect OTP")
+        }
         
     })
     .catch(error => console.log(error));
@@ -74,9 +103,14 @@ const OtpScreen = (props:any) => {
 
       const onChangeText = (val:any) =>{
             setInternalVal(val)
+            if(val.length === lengthInput){
+                console.log(val)
+                auth(val);
+                
+            }
       }
       useEffect(()=>{
-          textInput.focus()
+          textInput.focus();
       },[])
       
       
@@ -106,7 +140,8 @@ return (
 
                 {
                     Array(lengthInput).fill().map((data,index)=>(
-                        <View 
+                        <TouchableOpacity
+                         onPress={()=>textInput.focus()}
                          key={index}
                          style={[styles.cellView,
                                 {
@@ -116,12 +151,13 @@ return (
                          ]}>
 
                             <Text style={styles.cellText}
-                                onPress={()=> textInput }
+                                onPress={()=> textInput.focus() }
                                 >  
+                               
                                 {internalVal &&  internalVal.length > 0 ? internalVal[index] : ""}
                                 </Text>
 
-                         </View>
+                         </TouchableOpacity>
                     ))
 
                 }
@@ -134,14 +170,14 @@ return (
                 
             <TouchableOpacity onPress={()=>navigate('Login')}>
                             <View style={styles.btnChangeNumber}>
-                            <Text style= {styles.textChange}>Change Number</Text>
+                            <Text style= {styles.textChange}>Change Email</Text>
                             </View>
             </TouchableOpacity>
 
 
-            <TouchableOpacity onPress={auth}>
+            <TouchableOpacity onPress={sendOtp}>
                             <View style={styles.btnResend}>
-                            <Text style= {styles.textResend}>Resend Otp ({countdown})</Text>
+                            <Text style= {styles.textResend}>Resend Otp</Text>
                             </View>
             </TouchableOpacity>
 
@@ -195,7 +231,9 @@ const styles = StyleSheet.create({
       flexDirection: 'row',
       flex: 1,
     //   justifyContent: 'flex-end',
-      alignItems: 'flex-end',  
+    //   alignItems: 'flex-end',  
+      position: 'absolute',
+      bottom: 5
   },
   btnChangeNumber:{
       width: 150,

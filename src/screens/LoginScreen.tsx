@@ -15,31 +15,13 @@ const LoginScreen = () => {
 
 
     const [email, setEmail] = useState('');
-    const [phone, setPhone] = useState('');
     const [password, setPassword] = useState('')
     const [title, setTitle] = useState('Login')
-    const [isSignup, setIsSignup] = useState(false)
     
     const showToast = (msg: any) => {
         ToastAndroid.show(msg, ToastAndroid.LONG);
       };
 
-
-    // const onTapAuthenticate = () => {
-    //     getAuth();
-    //     if(isSignup){
-    //        OnUserSignup(email, phone, password);
-    //     }else{
-    //         OnUserLogin(email, password)
-    //     }
-
-    // }
-
-    // const onTapOptions = () => {
-    //     setIsSignup(!isSignup)
-    //     setTitle(!isSignup ? 'Signup' : 'Login')
-        
-    // }
 
 
     const auth = async () => {
@@ -50,17 +32,37 @@ const LoginScreen = () => {
     .then((result) => {
         console.log(result)
         if(result.status === 'ok'){
-            var msg = email;
-            navigate('Otp', {msg: "msg"})
+            
+            sendOtp()
+            navigate('Otp', {mail: email})
         }
         else{
-            showToast("Invalid Credentials")
+            showToast(result.message)
         }
     })
     .catch(error => console.log(error));
         
       };
 
+
+    const sendOtp = async () =>{
+        return fetch('http://backend.bittez.io/send-login-otp?email='+email, {
+            method: 'GET'
+            })
+            .then(response => response.json())
+        .then((result) => {
+            console.log("otp "+result.status)
+            if(result.status === 'ok'){
+                
+                // navigate('Otp', {mail: email})
+                showToast("Otp Sent Successfully")
+            }
+            else{
+                showToast("Otp Not Sent")
+            }
+        })
+        .catch(error => console.log(error));
+    }
 
 
 return (<View style={styles.container}>
@@ -69,7 +71,7 @@ return (<View style={styles.container}>
             
             <TextField placeholder="Email ID" onTextChange={setEmail} isSecure={false} />
 
-            {isSignup && <TextField placeholder="Phone Number" onTextChange={setPhone} isSecure={false} />}
+            
             <TextField placeholder="Password" onTextChange={setPassword} isSecure={true} />
 
             
@@ -129,11 +131,6 @@ appButtonContainer2: {
 
 })
 
- 
-const mapStateToProps = (state: ApplicationState) => ({
-    shoppingReducer: state.shoppingReducer,
-    userReducer: state.userReducer
-})
 
 
 

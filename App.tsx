@@ -22,7 +22,7 @@ import {SignUpScreen} from './src/screens/SignUpScreen'
 
 
 const switchNavigator = createSwitchNavigator({
-
+  
     landingStack: {
       screen: createStackNavigator({
         Landing: LandingScreen,
@@ -37,6 +37,7 @@ const switchNavigator = createSwitchNavigator({
     Login: {
       screen: createStackNavigator({
         Login: LoginScreen,
+        Otp: OtpScreen
         // search address screen
       },{
         defaultNavigationOptions: {
@@ -48,6 +49,7 @@ const switchNavigator = createSwitchNavigator({
     Otp: {
       screen: createStackNavigator({
         Otp: OtpScreen,
+        Login: LoginScreen
         // search address screen
       },{
         defaultNavigationOptions: {
@@ -162,7 +164,7 @@ const switchNavigator = createSwitchNavigator({
 
 const AppNavigation = createAppContainer(switchNavigator);
  
-export default function App() {
+export default function App() { 
   return (
     <Provider store={store}>
       <AppNavigation  />
