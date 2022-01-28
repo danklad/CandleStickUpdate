@@ -22,8 +22,6 @@ const OtpScreen = (props:any) => {
     const {navigation} = props;
     const mail = navigation.state.params.mail;
 
-    console.log(mail);
-
 
 
     const [email, setEmail] = useState(mail);
